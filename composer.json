@@ -10,5 +10,10 @@
     ],
     "require": {
         "dotsunited/bundlefu" : "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "ChemMVC\\": "src/"
+        }
     }
 }
