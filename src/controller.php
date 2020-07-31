@@ -10,7 +10,7 @@ class controller{
     function __construct($chem = null, $invokeAction = true){
         if($chem == null) die();
         $this->chem = $chem;
-        if($invokeAction) $this->invokeAction();
+        if($invokeAction) $this->result = $this->invokeAction();
     }
     public function hasAction()
     {
@@ -26,8 +26,8 @@ class controller{
         if($this->hasAction()){
             try {
                 // invoke the action
-                if($this->chem->catalyst->hasParameters()) $this->{$this->chem->catalyst->getAction()}(...$this->getParameters());
-                else $this->{$this->chem->catalyst->getAction()}();
+                if($this->chem->catalyst->hasParameters()) return $this->{$this->chem->catalyst->getAction()}(...$this->getParameters());
+                else return $this->{$this->chem->catalyst->getAction()}();
             } catch (\Exception $e) {
                 // TODO: Log this error stat dude...
                 echo $e;
@@ -36,8 +36,7 @@ class controller{
             // 404 response
             // TODO: CREATE A FREAKING 404 RESPONSE BROOO
             $result = new result(null, 404);
-            $result->display();
-            die();
+            return $result;
         }
     }
     // public function getParameters(){
@@ -55,25 +54,34 @@ class controller{
 
         foreach( $methodParams as $key => $methodParam){
             if(isset($requestParams[$methodParam->name])){
-                if(gettype($requestParams[$methodParam->name]) === 'object' 
+                $pType = $methodParam->getType()->__toString();
+                $rpType = gettype($requestParams[$methodParam->name]);
+                $rpType = ($rpType == 'bool' ? 'boolean' : ($rpType == 'float' ? 'double' : ($rpType == 'int' ? 'integer' : $rpType)));
+                if($rpType === 'object' 
                     && $methodParam->getClass() !== null 
                     && gettype($methodParam->getClass()) === 'object'
                     && !$methodParam->getClass()->isInternal()){
                         $instance = $methodParam->getClass()->newInstance(); // create a new instance
                         if(!utils::compareObjectProperties($requestParams[$methodParam->name], $instance)){ // do a full compare
-                            $valid = false;
+                            
                             break; // somin ain't right here
                         }
                         try{
                             $params[$methodParam->name] = utils::classCast($requestParams[$methodParam->name], $instance); // cast that ish
                         }catch(\Exception $e){
                             // TODO: Bad Mapping -> log this error stat dude...
-                            $valid = false;
+                            
                             break;
                         }
-                    }
+                }else if($pType == $rpType && $rpType != null){ // check basic type matching
+                    $params[$methodParam->name] = $requestParams[$methodParam->name];
+                    continue; // check basic class types
+                }
+                
+                    
             }
             else if(!$methodParam->allowsNull()) continue; // handle this
+            
         }
         // $this->mapParameters($params, $methodParams, $valid);
 

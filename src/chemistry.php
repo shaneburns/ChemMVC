@@ -36,8 +36,9 @@ class chemistry
         // Create a routing catalyst
         $this->catalyst = new routingCatalyst();
         if($loadOnInit) $this->instantiateController($loadOnInit);
-        //if($this->controller != null) $this->result = $this->controller->getResponse();
-        //$this->printResult($this->result);
+        
+        if($this->controller != null) $this->result = $this->controller->getResult();
+        $this->printResult($this->result);
     }
     public function putEnvVars(array $vars)
     {
@@ -80,7 +81,7 @@ class chemistry
         $beanNamespace = $baseSpace .'\\Beans';
         $daoNamespace = $baseSpace .'\\Daos';
 
-        $cache = new Common\Cache\ApcuCache();
+        $cache = new Common\Cache\ArrayCache();
 
         $logger = new Logger('cantina-app'); // $logger must be a PSR-3 compliant logger (optional).
 
@@ -122,24 +123,25 @@ class chemistry
             
     }
     
-    public function printResult(...$args)
+    public function printResult($result)
     {
         // Gurantee a response, even to say there was no reaction
-        $this->overload($args, [
-            function (Result $result)
-            {
-                $result->display();
-            },
-            function (){
-                return $this->printResult(new Result(['request'=> 'failed', 'message'=> 'Try again'], 400));
-            },
-            function (object $object){
-                return $this->printResult(new Result($object, 200));
-            },
-            function ($whatever){
-                return $this->printResult(new Result(['request'=> 'success', 'message'=> $whatever], 200));
-            }
-        ]);
+        // $this->overload($args, [
+        //     function (Result $result)
+        //     {
+        //         $result->display();
+        //     },
+        //     function (){
+        //         return $this->printResult(new Result(['request'=> 'failed', 'message'=> 'Try again'], 400));
+        //     },
+        //     function (object $object){
+        //         return $this->printResult(new Result($object, 200));
+        //     },
+        //     function ($whatever){
+        //         return $this->printResult(new Result(['request'=> 'success', 'message'=> $whatever], 200));
+        //     }
+        // ]);
+        if($result != null) $result->display();
     }
 
 
