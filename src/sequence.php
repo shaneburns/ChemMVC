@@ -14,7 +14,7 @@ class sequence{
     private $makeup;
     private $view;
     private $logic;
-    public $renderScripts = array();
+    public $scripts = array();
 
     public function __construct($makeup = '', bundleConfig $bundle = null){
         if($makeup !== '') {
@@ -66,5 +66,12 @@ class sequence{
     public function displayView(){// Echo view if not null
         if($this->view !== null) echo $this->view;
         else throw new Exception("No view to display.");
+    }
+    public function renderScripts(){
+        $result = '';
+        foreach ($this->scripts as $key => $value) {
+            $result .= $this->bundleConfig->bundles[$value]->renderJS();
+        }
+        return $result;
     }
 }
