@@ -10,10 +10,11 @@ class sequence{
             for one block of php code. Thus a bond can only have two components,
             in this current state.
     */
-    public $bundleConfig; // Dependency ref
     private $makeup;
     private $view;
     private $logic;
+    public $bundleConfig; // Dependency ref
+    public $title;
     public $scripts = array();
 
     public function __construct($makeup = '', bundleConfig $bundle = null){
