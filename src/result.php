@@ -11,7 +11,7 @@ class result
     {
         $this->body = $body;
         $this->headers = $headers;
-        $this->status = $status;
+        $this->status = $status == 0 ? 200 : $status;
     }
 
     function HTTPStatus($num) {
