@@ -30,10 +30,10 @@ class sequence{
     }
     public function uncouple(){
         // Sequence Breakdown
-        if(strpos($this->makeup, '<?php') !== false){
+        if(strpos($this->makeup, '<?php') === 0){
             $sb = explode('?>', $this->makeup);
         }
-        if(is_array($sb)){// We got stuff to parse out
+        if(isset($sb) && is_array($sb)){// We got stuff to parse out
 
             if(count($sb) == 2){// Almost guarenteed php code block && html view
                 $this->view = $sb[1];
@@ -59,6 +59,9 @@ class sequence{
     }
     public function hasView(){
         return !empty($this->view);
+    }
+    public function hasLogicalView(){
+        return !empty($this->view) && strpos($this->view, '<?php') !== false;
     }
     public function evalLogic(){// Evaluate php logic if not null
         if($this->logic !== null) eval($this->logic);

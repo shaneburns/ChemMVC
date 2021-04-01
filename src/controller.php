@@ -136,19 +136,20 @@ class controller{
             $fileContent = html_entity_decode(file_get_contents($path));
         }catch(\Exception $e){
             $caseType = preg_match('~^\p{Lu}~u', $controller) ? 'upper' : 'lower';
-            if($caseType == 'upper') $fileContent = $this->fileContents(\lcfirst($controller), $action);
-            else $fileContent = $this->fileContents(\ucfirst($controller), $action);
+            if($caseType == 'upper') list($fileContent, $path) = $this->fileContents(\lcfirst($controller), $action);
+            else list($fileContent, $path) = $this->fileContents(\ucfirst($controller), $action);
         }
-        return $fileContent;
+        return array($fileContent, $path);
     }
 
     function view(){
         //$stat = new StatisticsModels($this->chem->config->tdbmService);
         try {
-            $fileContent = $this->fileContents($this->chem->catalyst->getController(), $this->chem->catalyst->getAction());
+            list($fileContent, $path) = $this->fileContents($this->chem->catalyst->getController(), $this->chem->catalyst->getAction());
             if($fileContent == null) return new result(["request" => "failed"], 404);
             $this->bond = new sequence($fileContent, $this->chem->config->bundleConfig);
             if($this->bond->hasLogic()) $this->bond->evalLogic();
+            else if($this->bond->hasLogicalView()) include($path);
             else if($this->bond->hasView()) $this->bond->displayView();
 
         } catch (\Exception $e) {
