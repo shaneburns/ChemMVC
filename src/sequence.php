@@ -30,8 +30,9 @@ class sequence{
     }
     public function uncouple(){
         // Sequence Breakdown
-        $sb = explode('?>', $this->makeup);
-
+        if(strpos($this->makeup, '<?php') !== false){
+            $sb = explode('?>', $this->makeup);
+        }
         if(is_array($sb)){// We got stuff to parse out
 
             if(count($sb) == 2){// Almost guarenteed php code block && html view
