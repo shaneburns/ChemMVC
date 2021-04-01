@@ -17,20 +17,45 @@ class sequence{
     public $title;
     public $scripts = array();
 
-    public function __construct($makeup = '', bundleConfig $bundle = null){
-        if($makeup !== '') {
-            $this->makeup = $makeup;
+    public function __construct($controller = '', $action = '', bundleConfig $bundle = null){
+        if($controller !== '' && $action !== '') {
+            $this->controller = $controller;
+            $this->action = $action;
+            $this->makeup = $this->getFileContents();
             $this->uncouple();
             if($bundle != null) $this->bundleConfig = $bundle;
+            
+            if($this->hasLogic()) $this->evalLogic();
+            else if($this->hasLogicalView()) include($this->getPath());
+            else if($this->hasView()) $this->displayView();
+            
             return;
         }else{
             $error = 'Error: a sequence makeup was not set upon construct';
             throw new Exception($error);
         }
     }
+
+    function getPath(){
+        return ROOT.ds."views".ds.$this->controller.ds.$this->action.".php";
+    }
+
+    function getFileContents(){
+        $fileContent = null;
+        try{
+            $fileContent = html_entity_decode(file_get_contents($this->getPath()));
+        }catch(\Exception $e){
+            $caseType = preg_match('~^\p{Lu}~u', $this->controller) ? 'upper' : 'lower';
+            if($caseType == 'upper') $this->controller = \lcfirst($this->controller);
+            else $fileContent = $this->controller = \ucfirst($this->controller);
+            $fileContent = $this->getFileContents();
+        }
+        return $fileContent;
+    }
+
     public function uncouple(){
         // Sequence Breakdown
-        if(strpos($this->makeup, '<?php') === 0){
+        if($this->makeup != null && strpos($this->makeup, '<?php') === 0){
             $sb = explode('?>', $this->makeup);
         }
         if(isset($sb) && is_array($sb)){// We got stuff to parse out
