@@ -21,10 +21,12 @@ class sequence{
         if($controller !== '' && $action !== '') {
             $this->controller = $controller;
             $this->action = $action;
+            $this->bundleConfig = $bundle;
+
             $this->makeup = $this->getFileContents();
             if($this->makeup == null) return new result(null, 404);
+
             $this->uncouple();
-            if($bundle != null) $this->bundleConfig = $bundle;
 
             if($this->hasLogic()) $this->evalLogic();
             else if($this->hasLogicalView()) include($this->getPath());

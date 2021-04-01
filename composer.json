@@ -9,7 +9,12 @@
         }
     ],
     "require": {
-        "dotsunited/bundlefu" : "*"
+        "dotsunited/bundlefu" : "*",
+        "doctrine/dbal" : "*",
+        "doctrine/cache" : "*",
+        "monolog/monolog" : "*",
+        "mcshane/chem-mvc" : "*",
+        "thecodingmachine/tdbm" :  "^5.1"
     },
     "autoload": {
         "psr-4": {
