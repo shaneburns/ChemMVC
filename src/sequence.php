@@ -22,9 +22,10 @@ class sequence{
             $this->controller = $controller;
             $this->action = $action;
             $this->makeup = $this->getFileContents();
+            if($this->makeup == null) return new result(null, 404);
             $this->uncouple();
             if($bundle != null) $this->bundleConfig = $bundle;
-            
+
             if($this->hasLogic()) $this->evalLogic();
             else if($this->hasLogicalView()) include($this->getPath());
             else if($this->hasView()) $this->displayView();
@@ -40,15 +41,16 @@ class sequence{
         return ROOT.ds."views".ds.$this->controller.ds.$this->action.".php";
     }
 
-    function getFileContents(){
+    function getFileContents($recursion = false){
         $fileContent = null;
         try{
             $fileContent = html_entity_decode(file_get_contents($this->getPath()));
         }catch(\Exception $e){
+            if($recursion) return null;
             $caseType = preg_match('~^\p{Lu}~u', $this->controller) ? 'upper' : 'lower';
             if($caseType == 'upper') $this->controller = \lcfirst($this->controller);
             else $fileContent = $this->controller = \ucfirst($this->controller);
-            $fileContent = $this->getFileContents();
+            $fileContent = $this->getFileContents(true);
         }
         return $fileContent;
     }
