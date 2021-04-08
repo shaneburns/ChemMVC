@@ -63,7 +63,6 @@ class controller{
 
         foreach( $methodParams as $key => $methodParam){
             if(isset($requestParams[$methodParam->name])){
-                $pType = $methodParam->getType()->__toString();
                 $rpType = gettype($requestParams[$methodParam->name]);
                 $rpType = ($rpType == 'bool' ? 'boolean' : ($rpType == 'float' ? 'double' : ($rpType == 'int' ? 'integer' : $rpType)));
                 if($rpType === 'object' 
@@ -82,7 +81,7 @@ class controller{
                             
                             break;
                         }
-                }else if($pType == $rpType && $rpType != null){ // check basic type matching
+                }else{ // check basic type matching
                     $params[$methodParam->name] = $requestParams[$methodParam->name];
                     continue; // check basic class types
                 }
