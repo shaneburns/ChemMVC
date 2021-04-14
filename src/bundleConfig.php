@@ -7,6 +7,7 @@ namespace ChemMVC;
 class bundleConfig
 {
     private $settings;
+    private $filters;
     private $factory;
     public $bundles;
 
@@ -16,12 +17,15 @@ class bundleConfig
         $this->settings = array(
             'doc_root' => ($docRoot ?? $_SERVER['DOCUMENT_ROOT']. DIRECTORY_SEPARATOR),
             'css_cache_path' => ($cssCache ?? 'css/cache'),
-            'js_cache_path' => ($jsCache ?? 'scripts/cache'),
+            'js_cache_path' => ($jsCache ?? 'scripts/cache')
         );
 
-        $this->factory = new \DotsUnited\BundleFu\Factory($this->settings);
+        $this->filters = array(
+            'js_closure_compiler' => new \DotsUnited\BundleFu\Filter\ClosureCompilerServiceFilter()
+        );
+        
+        $this->factory = new \DotsUnited\BundleFu\Factory($this->settings, $this->filters);
 
-        // $bundle1 and $bundle2 use the same doc_root, css_cache_path and js_cache_path options
         $this->bundles = array();
 
     }
@@ -29,6 +33,6 @@ class bundleConfig
     public function createBundle(string $var = '')
     {
         if($var == '') return;
-        $this->bundles["$var"] = $this->factory->createBundle();
+        $this->bundles["$var"] = $this->factory->createBundle(array('js_filter' => new \DotsUnited\BundleFu\Filter\ClosureCompilerServiceFilter()));
     }
 }

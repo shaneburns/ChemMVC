@@ -7,7 +7,7 @@ class controller{
     public $bond;
     public $result;
 
-    function __construct($chem = null, $invokeAction = true){
+    public function __construct($chem = null, $invokeAction = true){
         if($chem == null) die();
         \set_error_handler(function($errno, $errstr, $errfile, $errline) {
             // error was suppressed with the @-operator
@@ -48,9 +48,7 @@ class controller{
             return $result;
         }
     }
-    // public function getParameters(){
-    //     $this->chem->catalyst->parametersNeedCasting() ? $this->castAndMapParamter() : $this->mapParameters()
-    // }
+    
     public function getParameters()
     {
         $requestParams = $this->chem->catalyst->getParameters();
@@ -83,7 +81,7 @@ class controller{
                         }
                 }else{ // check basic type matching
                     $params[$methodParam->name] = $requestParams[$methodParam->name];
-                    continue; // check basic class types
+                    continue;
                 }
                 
                     
@@ -91,48 +89,13 @@ class controller{
             else if(!$methodParam->allowsNull()) continue; // handle this
             
         }
-        // $this->mapParameters($params, $methodParams, $valid);
-
-        // if(!$valid && $skippedCount == 0) {
-        //     $result = new Result([], 404);
-        //     $result->display();
-        //     die();
-        // }
+        
         return array_values($params);
     }
-    // public function mapParameters(&$params, &$fParams, &$valid){
-    //     foreach($params as $key => ){// loop through those params
-    //         $pType = gettype($params[$i]);
-    //         $fpType = $fParams[$i]->getType()->__toString();
-    //         $fpType = ($fpType == 'bool' ? 'boolean' : ($fpType == 'float' ? 'double' : ($fpType == 'int' ? 'integer' : $fpType)));
-    //         if($pType == 'object' && $fParams[$i]->getClass() !== null && gettype($fParams[$i]->getClass()) == $pType){// check types for objects
-    //             if(!$fParams[$i]->getClass()->isInternal()){// see if it's not an internal class
-    //                 $instance = $fParams[$i]->getClass()->newInstance(); // create a new instance
-    //                 if(!utils::compareObjectProperties($params[$i], $instance)){ // do a full compare
-    //                     $valid = false;
-    //                     break; // somin ain't right here
-    //                 }
-    //                 try{
-    //                     $params[$i] = utils::classCast($params[$i], $instance); // cast that ish
-    //                 }catch(\Exception $e){
-    //                     // TODO: Bad Mapping -> log this error stat dude...
-    //                     $valid = false;
-    //                     break;
-    //                 }
-    //             }
-    //         }else if($pType != $fpType && $fpType != null){ // check basic type matching
-    //             $valid = false;
-    //             break; // check basic class types
-    //         }
-    //         $valid = true;
-    //     }
-    // }
 
-    function view(){
-        //$stat = new StatisticsModels($this->chem->config->tdbmService);
+    public function view(?string $alt = null){
         try {
-            $this->bond = new sequence($this->chem->catalyst->getController(), $this->chem->catalyst->getAction(), $this->chem->config->bundleConfig);
-
+            $this->bond = new sequence($this->chem->catalyst->getController(), !is_null($alt) && is_string($alt) ? $alt : $this->chem->catalyst->getAction(), $this->chem->config->bundleConfig);
         } catch (\Exception $e) {
             echo $e;
         }

@@ -13,7 +13,6 @@
         "doctrine/dbal" : "*",
         "doctrine/cache" : "*",
         "monolog/monolog" : "*",
-        "mcshane/chem-mvc" : "*",
         "thecodingmachine/tdbm" :  "^5.1"
     },
     "autoload": {
