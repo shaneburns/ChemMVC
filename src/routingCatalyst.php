@@ -52,7 +52,7 @@ class routingCatalyst{
         // Convert any JSON objects to 
         if(is_array($params) && !empty($params)){
             foreach ($params as $key => $value) {
-                if(gettype($value) == 'string' && utils::startsWith($value, '{"')) {
+                if(gettype($value) == 'string' && (utils::startsWith($value, '{"') || utils::startsWith($value, '['))) {
                     $temp = json_decode($value);
                     if(json_last_error() == JSON_ERROR_NONE) $params[$key] = $temp;
                 }

@@ -33,6 +33,6 @@ class bundleConfig
     public function createBundle(string $var = '')
     {
         if($var == '') return;
-        $this->bundles["$var"] = $this->factory->createBundle(array('js_filter' => new \DotsUnited\BundleFu\Filter\ClosureCompilerServiceFilter()));
+        $this->bundles["$var"] = $this->factory->createBundle(array('js_filter' => 'js_closure_compiler'));
     }
 }
