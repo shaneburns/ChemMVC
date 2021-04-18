@@ -18,7 +18,7 @@ class startup
             'ENV_DETAILS_PATH' => null,
             'PROJECT_NAMESPACE' => null,
             'CORE_NAMESPACE' => null,
-            'CONTROLLER_NAMESPACE' => 'controller',
+            'CONTROLLER_NAMESPACE' => 'controllers',
             'DEFAULT_CONTROLLER' => 'home',
             'DEFAULT_ACTION' => 'index',
             'DEFAULT_VERIFICATION_CONTROLLER' => 'verification',
