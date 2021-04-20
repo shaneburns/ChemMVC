@@ -7,8 +7,8 @@ class controller{
     public $bond;
     public $result;
 
-    public function __construct($chem = null, $invokeAction = true){
-        if($chem == null) die();
+    public function __construct(chemistry $chem, bool $invokeAction = true){
+        $this->chem = $chem;
         \set_error_handler(function($errno, $errstr, $errfile, $errline) {
             // error was suppressed with the @-operator
             if (0 === error_reporting()) {
@@ -17,7 +17,6 @@ class controller{
             
             throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
         });
-        $this->chem = $chem;
         if($invokeAction) $this->result = $this->invokeAction();
         \restore_error_handler();
     }
@@ -84,7 +83,6 @@ class controller{
                     continue;
                 }
                 
-                    
             }
             else if(!$methodParam->allowsNull()) continue; // handle this
             

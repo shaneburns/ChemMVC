@@ -24,19 +24,23 @@ class chemistry
 
         if(is_null(PROJECT_NAMESPACE) || is_null(ENV_DETAILS_PATH)){
             $this->result = new result("FATAL CHEMISTRY APPLICATION ERROR :: - \nThe expected PROJECT_NAMESPACE or ENV_DETAILS_PATH variables were not located in the defined constants scope.");
+            $this->result->display();
             die();
         }
-
         // Parse .env file for
         $this->putEnvVars(parse_ini_file(ENV_DETAILS_PATH));
+
         // Require SSL if denoted
         if(getenv('requireSSL') && (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off")) $this->sslRedirect();
+
         // Start TDBM services
         if(getenv('myDB') != null) $this->startTDBMService();
+
         // Create a routing catalyst
         $this->catalyst = new routingCatalyst();
         if($loadOnInit) $this->instantiateController($loadOnInit);
         
+        // Get the result
         if($this->controller != null) $this->result = $this->controller->getResult();
         $this->printResult($this->result);
     }
