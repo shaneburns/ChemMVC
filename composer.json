@@ -2,6 +2,7 @@
     "name": "mcshane/chem-mvc",
     "type": "library",
     "license": "MIT",
+    "description": "light weight mvc framework for php",
     "authors": [
         {
             "name": "Shane Burns",
