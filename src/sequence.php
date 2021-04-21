@@ -27,12 +27,6 @@ class sequence{
             if($this->makeup == null) return new result(null, 404);
 
             $this->uncouple();
-
-            if($this->hasLogic()) $this->evalLogic();
-            else if($this->hasLogicalView()) include($this->getPath());
-            else if($this->hasView()) $this->displayView();
-            
-            return;
         }else{
             $error = 'Error: a sequence makeup was not set upon construct';
             throw new Exception($error);
@@ -107,5 +101,13 @@ class sequence{
             $result .= $this->bundleConfig->bundles[$value]->renderJS();
         }
         return $result;
+    }
+    public function execute(){
+        if($this->hasLogic()){
+            $this->evalLogic();
+            if($this->hasView()) $this->displayView();
+        }
+        else if($this->hasLogicalView()) include($this->getPath());
+        else if($this->hasView()) $this->displayView();
     }
 }

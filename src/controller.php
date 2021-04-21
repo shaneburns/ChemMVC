@@ -9,16 +9,7 @@ class controller{
 
     public function __construct(chemistry $chem, bool $invokeAction = true){
         $this->chem = $chem;
-        \set_error_handler(function($errno, $errstr, $errfile, $errline) {
-            // error was suppressed with the @-operator
-            if (0 === error_reporting()) {
-                return false;
-            }
-            
-            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
-        });
         if($invokeAction) $this->result = $this->invokeAction();
-        \restore_error_handler();
     }
     public function hasAction()
     {
@@ -29,7 +20,7 @@ class controller{
         return $this->result;
     }
 
-    public function invokeAction(){
+    protected function invokeAction(){
         // Check if the action exists
         if($this->hasAction()){
             try {
@@ -37,26 +28,23 @@ class controller{
                 if($this->chem->catalyst->hasParameters()) return $this->{$this->chem->catalyst->getAction()}(...$this->getParameters());
                 else return $this->{$this->chem->catalyst->getAction()}();
             } catch (\Exception $e) {
-                // TODO: Log this error stat dude...
-                echo $e;
+                return $e;
             }
         }else{
-            // 404 response
-            // TODO: CREATE A FREAKING 404 RESPONSE BROOO
-            $result = new result(null, 404);
-            return $result;
+            // 404 
+            return new result(null, 404);
         }
     }
     
-    public function getParameters()
+    protected function getParameters()
     {
+        if(!$this->chem->catalyst->hasParameters()) return;
         $requestParams = $this->chem->catalyst->getParameters();
         $params = array();
         $action = $this->chem->catalyst->getAction();
         $valid = false;
         $method = new \ReflectionMethod($this, $action);
         $methodParams = $method->getParameters();
-
 
         foreach( $methodParams as $key => $methodParam){
             if(isset($requestParams[$methodParam->name])){
@@ -68,14 +56,14 @@ class controller{
                     && !$methodParam->getClass()->isInternal()){
                         $instance = $methodParam->getClass()->newInstance(); // create a new instance
                         if(!utils::compareObjectProperties($requestParams[$methodParam->name], $instance)){ // do a full compare
-                            
+                            $this->result = new \Exception("Chemistry Controller Error: faulty mapping on request parameter '$methodParam->name.'");
                             break; // somin ain't right here
                         }
                         try{
                             $params[$methodParam->name] = utils::classCast($requestParams[$methodParam->name], $instance); // cast that ish
                         }catch(\Exception $e){
                             // TODO: Bad Mapping -> log this error stat dude...
-                            
+                            $this->result = $e;
                             break;
                         }
                 }else{ // check basic type matching
@@ -91,22 +79,22 @@ class controller{
         return array_values($params);
     }
 
-    public function view(?string $alt = null){
+    protected function view(?string $alt = null){
         try {
-            $this->bond = new sequence($this->chem->catalyst->getController(), !is_null($alt) && is_string($alt) ? $alt : $this->chem->catalyst->getAction(), $this->chem->config->bundleConfig);
+            return new sequence($this->chem->catalyst->getController(), !is_null($alt) && is_string($alt) ? $alt : $this->chem->catalyst->getAction(), $this->chem->config->bundleConfig);
         } catch (\Exception $e) {
-            echo $e;
+            return $e;
         }
     }
 
-    public function redirectToAction($actionName = '') : void
+    protected function redirectToAction($actionName = '') : void
     {
         if(!empty($actionName)){
             $this->chem->catalyst->setAction($actionName);
             $this->redirect();
         }
     }
-    public function redirectToControllerAction($controllerName = '', $actionName = '') : void
+    protected function redirectToControllerAction($controllerName = '', $actionName = '') : void
     {
         if(!empty($controllerName) && !empty($actionName)){
             $this->chem->catalyst->setController($controllerName);
@@ -116,7 +104,7 @@ class controller{
         }
     }
 
-    public function redirect($newLocation = null, $statusCode = 303) : void
+    protected function redirect($newLocation = null, $statusCode = 303) : void
     {
         // Build location string
         if(is_null($newLocation))

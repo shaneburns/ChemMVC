@@ -3,19 +3,74 @@ namespace ChemMVC;
 
 class result  
 {
-    public $body;
-    public $headers;
-    public $status;
+    use Overloadable;
 
-    public function __construct($body, int $status = 0, array $headers = [])
+    protected $body;
+    protected array $headers;
+    protected int $status;
+
+    public function __construct(...$args)
     {
-        $this->body = $body;
-        $this->headers = $headers;
-        $this->status = $status == 0 ? 200 : $status;
+        $this->format(...$args);
     }
 
-    function HTTPStatus($num) {
-        $http = array(
+    public function set(...$args) : void
+    {
+        $this->format($args);
+    }
+
+    public function getBody() : mixed
+    {
+        return $this->body; 
+    }
+
+    public function getStatus() : int
+    {
+        return $this->status; 
+    }
+
+    public function getHeaders() : array
+    {
+        return is_array($this->headers) ? $this->headers : array(); 
+    }
+
+    protected function format(...$args) : void
+    {
+        $this->overload($args, [
+            function ($body, int $status, array $headers)
+            {
+                $this->body = !empty($body) && !is_null($body) ? $body : ['request'=> 'failed', 'message'=> 'No reaction found.'] ;
+                $this->status =  0 <= $status < 99 ? 200 : $status;
+                $this->headers = $headers;
+            },
+            function ($body){
+                $this->format($body, 200, []);
+            },
+            function ($body, int $status){
+                $this->format($body, $status, []);
+            },
+            function (\Exception $e){
+                $this->format($e->getMessage(), 500, []);
+            },
+            function (\Exception $e, int $status){
+                $this->format($e->getMessage(), $status, []);
+            },
+            function (\Exception $e, int $status, array $headers){
+                $this->format($e->getMessage(), $status, $headers);
+            },
+            function (result $result){
+                $this->format($result->getBody(), $result->getStatus(), $result->getHeaders());
+                unset($result);
+            },
+            function (){
+                $this->format($this->body ?? null, $this->status ?? 0, $this->headers ?? []);
+            }
+        ]);
+    }
+
+    protected function HTTPStatus() : object
+    {
+        $httpCodes = array(
             100 => 'HTTP/1.1 100 Continue',
             101 => 'HTTP/1.1 101 Switching Protocols',
             200 => 'HTTP/1.1 200 OK',
@@ -59,20 +114,24 @@ class result
             505 => 'HTTP/1.1 505 HTTP Version Not Supported',
         );
      
-        header($http[$num]);
-        \http_response_code($num);
+        array_push($this->headers, $httpCodes[$this->status]);
+        \http_response_code($this->status);
 
         return (object) array(
-            'code' => $num,
-            'message' => $http[$num],
+            'code' => $this->status,
+            'message' => $httpCodes[$this->status],
         );
     }
 
-    public function display()
+    public function display() : void
     {
-        $status = $this->HTTPStatus($this->status > 99 ? $this->status : 200);
+        $status = $this->HTTPStatus();
         if(!empty($this->headers)) foreach($this->headers as $h ) header($h);
+
+        if(\is_a($this->body, 'sequence')) $this->body->execute; die();
+
         if($this->status > 399 && (empty($this->body) || is_null($this->body)))  $this->body = ['request'=> 'failed', 'message'=> $status->message];
-        echo \json_encode($this->body);
+        if(gettype($this->body) === "object") echo \json_encode($this->body);
+        else echo $this->body;
     }
 }

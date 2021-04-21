@@ -6,10 +6,10 @@ namespace ChemMVC;
  */
 class bundleConfig
 {
-    private $settings;
-    private $filters;
-    private $factory;
-    public $bundles;
+    private array $settings;
+    private array $filters;
+    private \DotsUnited\BundleFu\Factory $factory;
+    public array $bundles;
 
     function __construct(string $docRoot = null, string $cssCache = null, string $jsCache = null)
     {

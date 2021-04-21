@@ -8,16 +8,18 @@ class routingCatalyst{
     private $queryString = null;
     private $parameters = null;
 
-    function __construct(){
+    public function __construct()
+    {
         // Grab and parse current request's url
         $this->equation = "$_SERVER[REQUEST_URI]";
         $this->equation = parse_url($this->equation);
+
         // Pour some sugar on it
         $this->transmute();
     }
 
-    function transmute(){
-
+    private function transmute() : void
+    {
         if(isset($this->equation['path']) && !empty($this->equation['path'])){
             // Split the URL at every '/' and get the first two splits
             $this->components = preg_split("#/#", $this->equation['path'], 2, PREG_SPLIT_NO_EMPTY);
@@ -36,17 +38,23 @@ class routingCatalyst{
         }
         if(isset($this->equation['query'])) $this->setQueryString($this->equation['query']);
     }
-    function setController(string $controller){
+
+    public function setController(string $controller) : void
+    {
         $this->controller = $controller;
     }
-    function setAction(string $action){
+
+    public function setAction(string $action) : void
+    {
         $this->action = $action;
     }
     
-    function hasParameters(){
+    public function hasParameters() : bool
+    {
         return (!is_null($this->parameters) && is_array($this->parameters) && !empty($this->parameters));
     }
-    function setParameters(){
+    public function setParameters() : void
+    {
         // Unify Get and Post params
         $params = \array_merge($_POST, $_GET);
         // Convert any JSON objects to 
@@ -61,15 +69,20 @@ class routingCatalyst{
         }
         else $this->parameters = null;
     }
-    function parametersNeedCasting(){
+
+    public function parametersNeedCasting() : bool
+    {
         $result = false;
-        foreach($this->parameters as $p) if(gettype($p) == 'object')  $result = true;
+        foreach($this->parameters as $p) if(gettype($p) == 'object')  $result = true; break;
         return $result;
     }
-    function getParameters(){
+
+    public function getParameters() : array
+    {
         return (is_array($this->parameters) ? $this->parameters : []);
     }
-    public function setQueryString($query = null)
+
+    public function setQueryString($query = null) : void
     {
         if(!is_null($query)){
             if(!is_null($this->queryString)) $this->queryString .= '&' . $query;
@@ -77,20 +90,27 @@ class routingCatalyst{
         }else $this->queryString = $query;
     }
 
-    function getControllerPath(){
+    public function getControllerPath() : string
+    {
         return PROJECT_NAMESPACE . "\\" . CONTROLLER_NAMESPACE . "\\" . $this->controller."Controller";
     }
-    function getController(){
+
+    public function getController() : string
+    {
         return $this->controller;
     }
-    function getAction(){
+
+    public function getAction() : string
+    {
         return $this->action;
     }
-    public function getQueryString()
+    
+    public function getQueryString() : string
     {
         return $this->queryString;
     }
-    public function getLocationString()
+
+    public function getLocationString() : string
     {
         return '/' . $this->getController() . '/' . $this->getAction() . (($this->getQueryString() !== null) ? '?' . $this->getQueryString() : '');
     }

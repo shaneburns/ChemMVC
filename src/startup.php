@@ -5,9 +5,9 @@ namespace ChemMVC;
  */
 class startup
 {
-    public $stdSettings;
-    public $settings;
-    public $bundles;
+    public array $stdSettings;
+    public array $settings;
+    public bundleConfig $bundleConfig;
 
     function __construct(array $settings)
     {
