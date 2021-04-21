@@ -3,10 +3,10 @@ namespace ChemMVC;
 // Class to house Controller/Action/Data Structure
 class routingCatalyst{
     public $equation;
-    private $controller = DEFAULT_CONTROLLER;
-    private $action = DEFAULT_ACTION;
-    private $queryString = null;
-    private $parameters = null;
+    private string $controller = DEFAULT_CONTROLLER;
+    private string $action = DEFAULT_ACTION;
+    private ?string $queryString = null;
+    private ?array $parameters = null;
 
     public function __construct()
     {
@@ -73,7 +73,7 @@ class routingCatalyst{
     public function parametersNeedCasting() : bool
     {
         $result = false;
-        foreach($this->parameters as $p) if(gettype($p) == 'object')  $result = true; break;
+        foreach($this->parameters as $p) if(gettype($p) == 'object'){ $result = true; break; }
         return $result;
     }
 

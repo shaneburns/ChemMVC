@@ -18,7 +18,15 @@ class chemistry
     private result $result;
 
     function __construct(startup $config, bool $loadOnInit = true){
-        \set_error_handler('exceptionErrorHandler');
+        \set_error_handler(function($errno, $errstr, $errfile, $errline)
+        {
+            // error was suppressed with the @-operator
+            if (0 === error_reporting()) {
+                return false;
+            }
+            
+            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+        });
 
         // Store config locally
         $this->config = $config;
@@ -46,10 +54,10 @@ class chemistry
                 $this->instantiateController($loadOnInit);
                 
                 // Get the result
-                if($this->controller != null) $this->result = new result($this->controller->getResult());
+                if(!empty($this->controller)) $this->result = new result($this->controller->getResult());
             }
         }catch(\Exception $e){
-            $this->result = new result($e->message, 500);
+            $this->result = new result($e, 500);
         }
         
         if($loadOnInit) $this->result->display();
@@ -57,7 +65,7 @@ class chemistry
         \restore_error_handler();
     }
 
-    public function putEnvVars(array $vars) : boid
+    public function putEnvVars(array $vars) : void
     {
         foreach($vars as $key => $val) putenv($key."=".$val);
     }
@@ -68,8 +76,7 @@ class chemistry
             if(!defined($var)){
                 define($var, $val);
             }else{
-                $this->result = new result(new \Exception("Chemistry Error: Constant '$var' is already defined and cannot be set again."), 500);
-                $this->result->display();
+                throw new \Exception("Chemistry Error: Constant '$var' is already defined and cannot be set again.");
             }
         }
     }
@@ -143,14 +150,13 @@ class chemistry
             
     }
 
-    function exceptionErrorHandler($errno, $errstr, $errfile, $errline) : void
+    public function exceptionErrorHandler($errno, $errstr, $errfile, $errline)
     {
         // error was suppressed with the @-operator
         if (0 === error_reporting()) {
             return false;
         }
         
-        $this->result = new result(new \ErrorException($errstr, 0, $errno, $errfile, $errline));
-        $this->result->display();
+        throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
     }
 }

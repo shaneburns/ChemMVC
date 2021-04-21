@@ -1,6 +1,8 @@
 <?php
 namespace ChemMVC;
 
+use Tightenco\Overload\Overloadable;
+
 class result  
 {
     use Overloadable;
@@ -19,7 +21,7 @@ class result
         $this->format($args);
     }
 
-    public function getBody() : mixed
+    public function getBody()
     {
         return $this->body; 
     }
@@ -40,11 +42,8 @@ class result
             function ($body, int $status, array $headers)
             {
                 $this->body = !empty($body) && !is_null($body) ? $body : ['request'=> 'failed', 'message'=> 'No reaction found.'] ;
-                $this->status =  0 <= $status < 99 ? 200 : $status;
+                $this->status =  0 <= $status && $status < 99 ? 200 : $status;
                 $this->headers = $headers;
-            },
-            function ($body){
-                $this->format($body, 200, []);
             },
             function ($body, int $status){
                 $this->format($body, $status, []);
@@ -61,6 +60,9 @@ class result
             function (result $result){
                 $this->format($result->getBody(), $result->getStatus(), $result->getHeaders());
                 unset($result);
+            },
+            function ($body){
+                $this->format($body, 200, []);
             },
             function (){
                 $this->format($this->body ?? null, $this->status ?? 0, $this->headers ?? []);
@@ -128,10 +130,13 @@ class result
         $status = $this->HTTPStatus();
         if(!empty($this->headers)) foreach($this->headers as $h ) header($h);
 
-        if(\is_a($this->body, 'sequence')) $this->body->execute; die();
+        if($this->body instanceof sequence){
+            $this->body->execute(); 
+            die();
+        }
 
         if($this->status > 399 && (empty($this->body) || is_null($this->body)))  $this->body = ['request'=> 'failed', 'message'=> $status->message];
-        if(gettype($this->body) === "object") echo \json_encode($this->body);
-        else echo $this->body;
+        if(gettype($this->body) === "object" || gettype($this->body) === "array") echo \json_encode($this->body);
+        else if(gettype($this->body) === "string") echo $this->body;
     }
 }
