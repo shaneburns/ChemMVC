@@ -15,6 +15,8 @@ class sequence{
     private $logic;
     public $bundleConfig; // Dependency ref
     public $title;
+    public $description;
+    public $styles = array();
     public $scripts = array();
 
     public function __construct($controller = '', $action = '', bundleConfig $bundle = null){
@@ -57,21 +59,14 @@ class sequence{
             $sb = explode('?>', $this->makeup);
         }
         if(isset($sb) && is_array($sb)){// We got stuff to parse out
-
             if(count($sb) == 2){// Almost guarenteed php code block && html view
                 $this->view = $sb[1];
                 if(strpos($sb[0], '<?php') !== false){
                     $this->logic = explode('<?php', $sb[0])[1];
                 }
                 return;
-            }
-
-            if(count($sb) == 1){// Should be html only, but could be php only(check for php first, if php exists run and return - else echo out html)
-                if(strpos($sb[0], '<?php') !== false){
-                    $this->logic = explode('<?php', $sb[0])[1];
-                    return;
-                }
-                $this->view = $sb[0];
+            }else{
+                $this->view = $this->makeup;
             }
         }else{// just html -> we can eval it just the same as php
             $this->view = $this->makeup;
@@ -95,6 +90,9 @@ class sequence{
         if($this->view !== null) echo $this->view;
         else throw new Exception("No view to display.");
     }
+    public function renderStyleTags(){
+        foreach ($this->styles as $url) echo "\r\n".'<link rel="stylesheet" href="'.$url.'">'."\r\n";
+    }
     public function renderScripts(){
         $result = '';
         foreach ($this->scripts as $key => $value) {
@@ -103,7 +101,7 @@ class sequence{
         return $result;
     }
     public function execute(){
-        if($this->hasLogic()){
+        if($this->hasLogic() && !$this->hasLogicalView()){
             $this->evalLogic();
             if($this->hasView()) $this->displayView();
         }
