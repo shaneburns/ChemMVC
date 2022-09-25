@@ -82,10 +82,15 @@ class homeController extends Controller
     }
 }
 ```
-***https://my-site.cool/home/couldBeCooler*** would process and return the result of ***my-project/app/views/home/couldBeCooler.php*** With no extra specification.
+then
+```
+https://my-site.cool/home/couldBeCooler
+```
+would process and return the result of ***my-project/app/views/home/couldBeCooler.php*** just like that.
 
 
 ***More to Come***
+
 Got any ideas for improvements? Fork this repo and make your art.
 I haven't even talked about TDBM(linked below). 
 
