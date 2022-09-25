@@ -15,7 +15,7 @@ composer require mcshane/chem-mvc
 
 ## Start faster with a template
 
-Just replace 'my-project' with the name of the repo you want to start
+Just replace 'my-project' with the name of your project
 
 ```
 composer create-project eadrom/chemmvc-template my-project
@@ -27,7 +27,7 @@ Delete the newly installed composer files in 'my-project' root and cd to 'my-pro
 composer install
 ```
 
-The project structure is setup and composer dependencies installed. 
+The project structure is now setup and composer dependencies installed. 
 You're ready to start building your web project.
 
 To the controllers.
@@ -37,7 +37,7 @@ To the controllers.
 Chem MVC works off of a routing catalyst that assumes a url stucture of
 
 ```
-/ControllerName/ActionName
+/ControllerName/ActionName/Params
 ```
 
 Take the following url for example
