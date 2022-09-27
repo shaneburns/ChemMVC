@@ -13,17 +13,15 @@ class sequence{
     private $makeup;
     private $view;
     private $logic;
-    public $bundleConfig; // Dependency ref
     public $title;
     public $description;
     public $styles = array();
     public $scripts = array();
 
-    public function __construct($controller = '', $action = '', bundleConfig $bundle = null){
+    public function __construct($controller = '', $action = ''){
         if($controller !== '' && $action !== '') {
             $this->controller = $controller;
             $this->action = $action;
-            $this->bundleConfig = $bundle;
 
             $this->makeup = $this->getFileContents();
             if($this->makeup == null) return new result(null, 404);
@@ -93,12 +91,8 @@ class sequence{
     public function renderStyleTags(){
         foreach ($this->styles as $url) echo "\r\n".'<link rel="stylesheet" href="'.$url.'">'."\r\n";
     }
-    public function renderScripts(){
-        $result = '';
-        foreach ($this->scripts as $key => $value) {
-            $result .= $this->bundleConfig->bundles[$value]->renderJS();
-        }
-        return $result;
+    public function renderScriptTags(){
+        foreach ($this->scripts as $url) echo "\r\n".'<script src="'.$url.'"></script>'."\r\n";
     }
     public function execute(){
         if($this->hasLogic() && !$this->hasLogicalView()){

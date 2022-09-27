@@ -9,14 +9,15 @@
             "email": "mcshaneburns@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../ChemCommon"
+        }
+    ],
     "require": {
-        "PHP" : "^7.2",
-        "dotsunited/bundlefu" : "*",
-        "doctrine/dbal" : "*",
-        "doctrine/cache" : "*",
-        "monolog/monolog" : "*",
-        "thecodingmachine/tdbm" :  "^5.1",
-        "tightenco/overload": "^0.1.3"
+        "PHP" : "^7.4",
+        "mcshane/chem-common" : "dev-main"
     },
     "autoload": {
         "psr-4": {

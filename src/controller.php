@@ -7,7 +7,7 @@ class controller{
     public $bond;
     public $result;
 
-    public function __construct(chemistry $chem, bool $invokeAction = true){
+    public function __construct(ChemMVC $chem, bool $invokeAction = true){
         $this->chem = $chem;
         if($invokeAction) $this->result = $this->invokeAction();
     }
@@ -81,7 +81,7 @@ class controller{
 
     protected function view(?string $alt = null){
         try {
-            return new sequence($this->chem->catalyst->getController(), !is_null($alt) && is_string($alt) ? $alt : $this->chem->catalyst->getAction(), $this->chem->config->bundleConfig);
+            return new sequence($this->chem->catalyst->getController(), !is_null($alt) && is_string($alt) ? $alt : $this->chem->catalyst->getAction());
         } catch (\Exception $e) {
             return $e;
         }
