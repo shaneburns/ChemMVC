@@ -95,5 +95,4 @@ Got any ideas for improvements? Fork this repo and make your art.
 I haven't even talked about TDBM(linked below). 
 
 ## Depenedency List(and reasons why they are here):
-* [BundleFu](https://github.com/dotsunited/BundleFu) - Packing JS and CSS files into bundles for individual pages, reducing load time from code base bloat(currently being deprecated in favor of webpack for JS and SASS)
 * [TDBM](https://github.com/thecodingmachine/tdbm) - Modeling your database into usable php classes with CRUD operations, data structuring and data requirements built in.
