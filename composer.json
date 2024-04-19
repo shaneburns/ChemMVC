@@ -16,7 +16,6 @@
         }
     ],
     "require": {
-        "PHP" : "^7.4",
         "mcshane/chem-common" : "dev-main"
     },
     "autoload": {
