@@ -15,6 +15,7 @@ class sequence{
     private $logic;
     public $title;
     public $description;
+    public $displayed = false;
     public $styles = array();
     public $scripts = array();
 
@@ -97,9 +98,9 @@ class sequence{
     public function execute(){
         if($this->hasLogic() && !$this->hasLogicalView()){
             $this->evalLogic();
-            if($this->hasView()) $this->displayView();
+            if($this->hasView() && !$this->displayed) $this->displayView();
         }
         else if($this->hasLogicalView()) include($this->getPath());
-        else if($this->hasView()) $this->displayView();
+        else if($this->hasView() && !$this->displayed) $this->displayView();
     }
 }

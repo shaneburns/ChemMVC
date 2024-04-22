@@ -4,16 +4,17 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3854fdbff6e84168175f07890506a4ae",
+    "content-hash": "ba391eec499e8f29328085c2c3005fc8",
     "packages": [
         {
             "name": "mcshane/chem-common",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "/home/eadrom/dev/ChemCommon",
-                "reference": "b8e942a7494844aba51e3f6ab1ed7d96515695c5"
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shaneburns/ChemCommon.git",
+                "reference": "fe5ee7ce60a174074fab87b11764ddc4d5b2bc38"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -30,9 +31,7 @@
                 }
             ],
             "description": "Main encapsulation of core functionality in MVC, CORE, or API application.",
-            "transport-options": {
-                "relative": false
-            }
+            "time": "2024-04-21T05:03:48+00:00"
         }
     ],
     "packages-dev": [],

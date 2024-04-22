@@ -11,8 +11,8 @@
     ],
     "repositories": [
         {
-            "type": "path",
-            "url": "~/dev/ChemCommon"
+            "type": "git",
+            "url": "https://github.com/shaneburns/ChemCommon.git"
         }
     ],
     "require": {
@@ -20,7 +20,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ChemMVC\\": "src"
+            "ChemMVC\\": "dsrc"
         }
     }
 }
