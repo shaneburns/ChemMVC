@@ -12,7 +12,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shaneburns/ChemCommon.git",
-                "reference": "fe5ee7ce60a174074fab87b11764ddc4d5b2bc38"
+                "reference": "724a40618807218f7aefae0a24700a52c1e7cca0"
             },
             "default-branch": true,
             "type": "library",
@@ -31,7 +31,7 @@
                 }
             ],
             "description": "Main encapsulation of core functionality in MVC, CORE, or API application.",
-            "time": "2024-04-21T05:03:48+00:00"
+            "time": "2024-04-21T06:17:03+00:00"
         }
     ],
     "packages-dev": [],
