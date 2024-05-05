@@ -96,6 +96,7 @@ class sequence{
         foreach ($this->scripts as $url) echo "\r\n".'<script src="'.$url.'"></script>'."\r\n";
     }
     public function execute(){
+        echo 'here';
         if($this->hasLogic() && !$this->hasLogicalView()){
             $this->evalLogic();
             if($this->hasView() && !$this->displayed) $this->displayView();
